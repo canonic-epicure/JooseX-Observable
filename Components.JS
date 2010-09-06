@@ -2,6 +2,7 @@ COMPONENTS = {
     // a comment
     
     "Core" : [
+        "JooseX.Observable.Listener",
         "JooseX.Observable"
     ],
     

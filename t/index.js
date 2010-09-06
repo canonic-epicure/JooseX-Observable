@@ -20,7 +20,9 @@ Harness.configure({
         "jsan:Task.JooseX.Namespace.Depended.NodeJS",
         {
             text : "JooseX.Namespace.Depended.Manager.my.INC = " + JSON.stringify(INC)
-        }
+        },
+        
+        "Task.JooseX.Observable.Core"
         
     ] : [
         "jsan:Task.Joose.Core",
@@ -28,12 +30,15 @@ Harness.configure({
         "jsan:Task.JooseX.Namespace.Depended.Web",
         {
             text : "JooseX.Namespace.Depended.Manager.my.INC = " + Ext.encode(Harness.absolutizeINC(INC))
-        }
+        },
+        
+        "Task.JooseX.Observable.Core"
     ]
 })
 
 
 Harness.start(
-    '010_sanity.t.js'
+    '010_sanity.t.js',
+    '020_basic.t.js'
 )
 
