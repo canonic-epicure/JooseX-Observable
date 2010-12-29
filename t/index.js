@@ -41,6 +41,7 @@ Harness.start(
     '010_sanity.t.js',
     '020_basic.t.js',
     '030_hierarchical.t.js',
-    '040_bubbling.t.js'
+    '040_bubbling.t.js',
+    '050_single.t.js'
 )
 
