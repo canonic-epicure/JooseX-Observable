@@ -8,7 +8,11 @@ StartTest(function(t) {
     
     Class('TestClass', {
         
-        does        : JooseX.Observable
+        does        : JooseX.Observable,
+        
+        has : {
+            bubbleTarget    : { is : 'rw' }
+        }
     
     })
     
@@ -32,8 +36,14 @@ StartTest(function(t) {
         listener1Called++
         
         t.ok(this == scope, 'Event fired in the correct scope')
+        t.ok(e.source == test, 'Correct value for `source` of event')
+        t.ok(e.current == test, 'Correct value for `current` of event')
+        
+        t.ok(e.splat == null, '`splat` is not defined for this listener')
         
         t.ok(obj == test && arg1 == 1 && arg2 == 10, 'Event fired with correct arguments')
+        
+        return false
     
     }, scope)
 
@@ -47,7 +57,16 @@ StartTest(function(t) {
     })
     
     
-    test.fireEvent('test', test, 1, 10)
+    //======================================================================================================================================================================================================================================================
+    t.diag('hasListenerFor')
+    
+    t.ok(test.hasListenerFor('test'), 'Test has listeners for `test` event')
+    t.ok(test.hasListenerFor('/test'), 'Test has listeners for `test` event in hierarchical notation')
+    
+    
+    var res = test.fireEvent('test', test, 1, 10)
+    
+    t.ok(res === false, 'Correct result from `fireEvent`')
     
     t.ok(listener1Called == 1, 'Listener called once #1')
     t.ok(listener2Called == 1, 'Listener called once #2')
@@ -104,6 +123,8 @@ StartTest(function(t) {
     test.fireEvent('test', test, 1, 10)
     
     t.ok(listener1Called == 3, 'Listener was purged')
+    
+    t.ok(!test.hasListenerFor('test'), 'Test has no listeners for `test` event')
     
     
     t.done()

@@ -7,7 +7,13 @@ StartTest(function(t) {
     
     
     Class('TestClass', {
-        does        : JooseX.Observable
+        
+        does        : JooseX.Observable,
+        
+        has : {
+            bubbleTarget    : { is : 'rw' }
+        }
+    
     })
     
     
@@ -17,81 +23,101 @@ StartTest(function(t) {
     //======================================================================================================================================================================================================================================================
     t.diag('Events')
     
-    var scope   = {}
-
     var test    = new TestClass()
     
-    var listener1Called = 0
-    var listener2Called = 0
+    var listenersCalled 
+    var splats          
     
     
-    var listener1 = test.on('/test/*', function (obj, arg1, arg2) {
-        
-        listener1Called++
-        
-        t.ok(this == scope, 'Event fired in the correct scope')
-        
-        t.ok(obj == test && arg1 == 1 && arg2 == 10, 'Event fired with correct arguments')
-    
-    }, scope)
-
+    var reset = function () {
+        listenersCalled = [ 0, 0, 0, 0 ]
+        splats          = [ null, null, null, null]
+    }
 
     
-    var listener2 = test.on('/test/value', function (obj, arg1, arg2) {
+    var listener0 = test.on('/test', function (e) {
         
-        listener2Called++
+        listenersCalled[ 0 ]++
         
-        t.ok(this == test, 'Default scope is the source of event')
+        splats[ 0 ] = e.splat
+    })
+
+
+    var listener1 = test.on('/test/*', function (e) {
+        
+        listenersCalled[ 1 ]++
+        
+        splats[ 1 ] = e.splat
     })
     
     
-    test.fireEvent('/test/value', test, 1, 10)
-    
-    t.ok(listener1Called == 1, 'Listener called once #1')
-    t.ok(listener2Called == 1, 'Listener called once #2')
-    
-    
-    //======================================================================================================================================================================================================================================================
-    t.diag('Suspending')
+    var listener2 = test.on('/test/**', function (e) {
+        
+        listenersCalled[ 2 ]++
+        
+        splats[ 2 ] = e.splat
+    })
     
     
-    test.suspendEvents()
-    test.suspendEvents()
+    var listener3 = test.on('/**', function (e) {
+        
+        listenersCalled[ 3 ]++
+        
+        splats[ 3 ] = e.splat
+    })
     
-    test.fireEvent('test', test, 1, 10)
-
-    t.ok(listener1Called == 1, 'Listener has not been called #1')
-    t.ok(listener2Called == 1, 'Listener has not been called #2')
     
     
     //======================================================================================================================================================================================================================================================
-    t.diag('Resuming')
+    t.diag('hasListenerFor')
     
-    test.resumeEvents()
+    t.ok(test.hasListenerFor('/test'), 'Test has listeners for `test` event #1')
+    t.ok(test.hasListenerFor('/test/foo'), 'Test has listeners for `test` event #2')
+    t.ok(test.hasListenerFor('/test/foo/bar'), 'Test has listeners for `test` event #3')
     
-    test.fireEvent('test', test, 1, 10)
+
+    //======================================================================================================================================================================================================================================================
+    t.diag('Hierarchical events')
     
-    t.ok(listener1Called == 1, 'Listener has not been called #3')
-    t.ok(listener2Called == 1, 'Listener has not been called #4')
+    reset()
+    test.fireEvent('/test')
+    
+    t.is_deeply(listenersCalled, [ 1, 0, 0, 1 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, null, null, [ 'test' ] ], 'Correct splats received')
 
     
-    test.resumeEvents()
+    reset()
+    test.fireEvent('/test/')
     
-    test.fireEvent('test', test, 1, 10)
+    t.is_deeply(listenersCalled, [ 0, 1, 1, 1 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, '', [ '' ], [ 'test', ''] ], 'Correct splats received')
     
-    t.ok(listener1Called == 2, 'Listener called twice #1')
-    t.ok(listener2Called == 2, 'Listener called twice #2')
+
+    reset()
+    test.fireEvent('/test/foo')
+    
+    t.is_deeply(listenersCalled, [ 0, 1, 1, 1 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, 'foo', [ 'foo' ], [ 'test', 'foo'] ], 'Correct splats received')
+    
+
+    reset()
+    test.fireEvent('/test/foo/bar')
+    
+    t.is_deeply(listenersCalled, [ 0, 0, 1, 1 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, null, [ 'foo', 'bar' ], [ 'test', 'foo', 'bar' ] ], 'Correct splats received')
     
     
     //======================================================================================================================================================================================================================================================
     t.diag('Removing listener')
     
-    test.un(listener2)
+    test.un('/test/**', listener2.func, listener2.scope)
+
     
-    test.fireEvent('test', test, 1, 10)
+    reset()
+    test.fireEvent('/test/baz')
     
-    t.ok(listener1Called == 3, 'Listener called 3 times')
-    t.ok(listener2Called == 2, 'Listener was removed')
+    t.is_deeply(listenersCalled, [ 0, 1, 0, 1 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, 'baz', null, [ 'test', 'baz' ] ], 'Correct splats received')
     
     
     //======================================================================================================================================================================================================================================================
@@ -99,9 +125,11 @@ StartTest(function(t) {
     
     test.purgeListeners()
     
-    test.fireEvent('test', test, 1, 10)
+    reset()
+    test.fireEvent('/test/baz')
     
-    t.ok(listener1Called == 3, 'Listener was purged')
+    t.is_deeply(listenersCalled, [ 0, 0, 0, 0 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, null, null, null ], 'Correct splats received')
     
     
     t.done()
