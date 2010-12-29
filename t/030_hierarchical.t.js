@@ -111,13 +111,14 @@ StartTest(function(t) {
     t.diag('Removing listener')
     
     test.un('/test/**', listener2.func, listener2.scope)
+    test.un(listener3)
 
     
     reset()
     test.fireEvent('/test/baz')
     
-    t.is_deeply(listenersCalled, [ 0, 1, 0, 1 ], 'Correct listeners fired')
-    t.is_deeply(splats, [ null, 'baz', null, [ 'test', 'baz' ] ], 'Correct splats received')
+    t.is_deeply(listenersCalled, [ 0, 1, 0, 0 ], 'Correct listeners fired')
+    t.is_deeply(splats, [ null, 'baz', null, null ], 'Correct splats received')
     
     
     //======================================================================================================================================================================================================================================================
