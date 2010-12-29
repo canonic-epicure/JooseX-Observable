@@ -2,13 +2,9 @@ COMPONENTS = {
     // a comment
     
     "Core" : [
+        "JooseX.Observable.Event",
         "JooseX.Observable.Listener",
+        "JooseX.Observable.Channel",
         "JooseX.Observable"
-    ],
-    
-    
-    "Bundle" : [
-        "jsan:Task.Joose.Core",
-        "+Core"
     ]
 }

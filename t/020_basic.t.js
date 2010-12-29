@@ -27,7 +27,7 @@ StartTest(function(t) {
     var listener2Called = 0
     
     
-    var listener1 = test.on('test', function (obj, arg1, arg2) {
+    var listener1 = test.on('test', function (e, obj, arg1, arg2) {
         
         listener1Called++
         
@@ -39,7 +39,7 @@ StartTest(function(t) {
 
 
     
-    var listener2 = test.on('test', function (obj, arg1, arg2) {
+    var listener2 = test.on('test', function (e, obj, arg1, arg2) {
         
         listener2Called++
         
