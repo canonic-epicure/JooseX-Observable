@@ -56,18 +56,9 @@ StartTest(function(t) {
         listenersCalled[ 3 ]++
     }, null, { single : true })
     
-    
-    
-    //======================================================================================================================================================================================================================================================
-    t.diag('hasListenerFor')
-    
-    t.ok(test.hasListenerFor('/test'), 'Test has listeners for `test` event #1')
-    t.ok(test.hasListenerFor('/test/foo'), 'Test has listeners for `test` event #2')
-    t.ok(test.hasListenerFor('/test/foo/bar'), 'Test has listeners for `test` event #3')
-    
 
     //======================================================================================================================================================================================================================================================
-    t.diag('Hierarchical events')
+    t.diag('"Single" handlers')
     
     reset()
     test.fireEvent('/test')
@@ -85,6 +76,24 @@ StartTest(function(t) {
     test.fireEvent('/test/foo')
     
     t.is_deeply(listenersCalled, [ 0, 1, 0, 0 ], 'Listeners with `single` option has not been called already')
+
+
+    //======================================================================================================================================================================================================================================================
+    t.diag('Repeated activation')
+    
+    
+    test.on('test1', function () {
+        
+        test.fireEvent('test1')
+    
+    }, test, { single : true })
+    
+    
+    test.fireEvent('test1')
+    
+    
+    t.pass('No infinite recursion')
+    
     
     t.done()
 })    

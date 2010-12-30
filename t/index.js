@@ -15,21 +15,11 @@ var INC = (isNode ? require.paths : []).concat('../lib', '/jsan')
 Harness.configure({
     title     : 'JooseX.Observable Test Suite',
     
-    preload : Joose.is_NodeJS ? [
+    preload : [
         "jsan:Task.Joose.Core",
-        "jsan:Task.JooseX.Namespace.Depended.NodeJS",
+        "jsan:Task.JooseX.Namespace.Depended.Auto",
         {
-            text : "JooseX.Namespace.Depended.Manager.my.INC = " + JSON.stringify(INC)
-        },
-        
-        "Task.JooseX.Observable.Core"
-        
-    ] : [
-        "jsan:Task.Joose.Core",
-        "jsan:JooseX.SimpleRequest",
-        "jsan:Task.JooseX.Namespace.Depended.Web",
-        {
-            text : "JooseX.Namespace.Depended.Manager.my.INC = " + Ext.encode(Harness.absolutizeINC(INC))
+            text : "use.paths = " + Harness.prepareINC(INC)
         },
         
         "Task.JooseX.Observable.Core"
