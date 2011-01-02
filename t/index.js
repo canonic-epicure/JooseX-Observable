@@ -35,7 +35,8 @@ Harness.start(
     '050_single.t.js',
     '060_delay.t.js',
     '070_buffer.t.js',
-    '071_buffer_max.t.js',
-    '072_buffer_max.t.js'
+    '071_buffer_cancel.t.js',
+    '080_buffer_max.t.js',
+    '081_buffer_max.t.js'
 )
 
