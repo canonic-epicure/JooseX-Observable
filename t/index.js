@@ -32,6 +32,10 @@ Harness.start(
     '020_basic.t.js',
     '030_hierarchical.t.js',
     '040_bubbling.t.js',
-    '050_single.t.js'
+    '050_single.t.js',
+    '060_delay.t.js',
+    '070_buffer.t.js',
+    '071_buffer_max.t.js',
+    '072_buffer_max.t.js'
 )
 
