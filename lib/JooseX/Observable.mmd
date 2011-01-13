@@ -1,7 +1,7 @@
 Name
 ====
 
-JooseX.Observable - Observable pattern as Joose Role
+JooseX.Observable - cross-plaform implementation of the Observable pattern
 
 
 SYNOPSIS
@@ -111,7 +111,7 @@ From `npm`:
     
     > [sudo] npm install joosex-observable         
 
-Tarballs are available for downloading at: http://search.npmjs.org/#/joosex-observable
+Tarballs are available for downloading at: <http://search.npmjs.org/#/joosex-observable>
 
 
 SETUP
@@ -218,6 +218,7 @@ The same rules applies for the listeners, plus you can use the `*` and `**` wild
 Hierarchical events are useful, when instance may emit *a lot* of different events, which can be categorized in groups, and listeners
 need the ability to listen on the whole group of events.
 
+See also [JooseX.Observable.Event](Observable/Event.html) documentation to know how to introspect the `event` instance.
 
 
 EVENTS BUBBLING
@@ -226,9 +227,19 @@ EVENTS BUBBLING
 Additionally, all events bubbles (a-la DOM). This is useful, when the instance participate in the nested "part/whole" relationships and 
 the "whole" needs to listen the events from the inner "parts". 
 
-To use this feature, provide the implementation of the `getBubbleTarget` method in the consuming class.
+To use this feature, provide the implementation of the `getBubbleTarget` method in the consuming class:
 
-If in the handler, you will call the `stopPropagation` method of the event, it will stop bubbling:
+        Class('Component', {
+            does    : JooseX.Observable,
+            
+            methods : {
+                
+                getBubbleTarget : function () {
+                }
+            }
+        })
+
+In the handler, you may call the `stopPropagation` method of the event, to stop bubbling:
 
         var handler     = function (event, param1, param2) {
             // event.source     == component
@@ -258,7 +269,7 @@ METHODS
 
 > `on(eventName, func, scope?, options?)`
 
-> This method create a new listener for the event `eventName`. Listener will activate the function `func` using either provided `scope` or the
+> This method creates a new listener for the event `eventName`. Listener will activate the function `func` using either provided `scope` or the
 event source as the scope. Optional `options` parameter should contain object with properties, corresponding to attributes of [JooseX.Observable.Listener](Observable/Listener.html) 
 
 > Returns an instance of [JooseX.Observable.Listener](Observable/Listener.html)
@@ -309,7 +320,7 @@ instance of [JooseX.Observable.Event](Observable/Event.html) as the 1st argument
 
 > `resumeEvents()`
 
-> This method decrease the [suspendCounter] attribute. As soon as it becomes 0 again, instance can emit events again.  
+> This method decrease the [suspendCounter] attribute. As soon as it becomes 0 again, instance can emit events.  
 
 
 
@@ -326,6 +337,10 @@ on irc.freenode.org or mailing list at: <http://groups.google.com/group/joose-js
 
 SEE ALSO
 ========
+
+[JooseX.Observable.Listener](Observable/Listener.html)
+
+[JooseX.Observable.Event](Observable/Event.html)
 
 Web page of this module: <http://github.com/SamuraiJack/JooseX-Observable/>
 

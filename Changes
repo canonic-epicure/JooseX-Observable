@@ -2,6 +2,8 @@ Release history for JooseX.Observable
 
 {{$NEXT}}
 
+        - added documentation
+
 0.02      2010-11-12 13:28
 
         - re-release with updated dist.ini
